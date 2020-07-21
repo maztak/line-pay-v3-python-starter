@@ -29,6 +29,10 @@ $ git clone https://github.com/maztak/line-pay-v3-python-starter.git line-pay-ap
 
 $ heroku login
 $ heroku create line-pay-app-xxx
+
+$ cd line-pay-app-xxx
+$ git init
+
 $ heroku git:remote -a line-pay-app-xxx
 $ git push heroku master
 
