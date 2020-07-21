@@ -10,7 +10,14 @@
 
 ## LINE Pay 加盟店情報の準備
 
-加盟店審査が完了している方はご自身のもので、まだの方は[Sandbox](https://pay.line.me/jp/developers/techsupport/sandbox/testflow?locale=ja_JP)を作成
+LINE Pay 加盟店申請を済ませておき、[加盟店MyPage](https://pay.line.me/portal/jp/mypage)にログインできるようにしておく。
+
+決済連動管理＞連動キー管理から
+
+* Channel ID
+* Channel Secret Key
+
+を確認し、控えておく。
 
 
 ## Herokuにデプロイする
@@ -19,8 +26,8 @@
 
 ```
 $ git clone https://github.com/maztak/line-pay-v3-python-starter.git line-pay-app-xxx
-$ heroku login
 
+$ heroku login
 $ heroku create line-pay-app-xxx
 $ heroku git:remote -a line-pay-app-xxx
 $ git push heroku master
@@ -35,36 +42,24 @@ $ heroku config:set LINE_PAY_CHANNEL_SECRET=xxx
 
 金額を変えたい場合は`app.py`の51行目付近にある`reserve_payment`メソッドの`amount`の値を変更してください。
 
-```python
-
-request_options = {
-    "amount": amount,
-    "currency": currency,
-    "orderId": order_id,
-    "packages": [
-        {
-            "id": "package-999",
-            "amount": 1,
-            "name": "Sample package",
-            "products": [
-                    {
-                        "id": "product-001",
-                        "name": "Sample product",
-                        "imageUrl": "https://placehold.jp/99ccff/003366/150x150.png?text=Sample%20product",
-                                    "quantity": 1,
-                                    "price": 1
-                    }
-            ]
-        }
-    ],
+```app.py
+@app.route('/request/<param_capture>')
+def reserve_payment(param_capture):
+    order_id = str(uuid.uuid4())
+    amount = 1 # ここを変更
+    currency = "JPY"
+    CACHE["order_id"] = order_id
+    CACHE["amount"] = amount
+    CACHE["currency"] = currency
+    request_options = {
 
 ```
 
-### 取引履歴の確認や返金
+## 取引履歴の確認や返金
 
-取引履歴の確認や返金は[LINE Pay 加盟店 My Page](https://pay.line.me/portal/jp/mypage)で行ってください。
+取引履歴の確認や返金は [LINE Pay 加盟店 My Page](https://pay.line.me/portal/jp/mypage) で行ってください。
 
-#️## その他の決済方法
+## その他の決済方法
 
 トップページには売上確定（キャプチャ）まで自動で行う`Request & Capture`ボタンを`LINE Pay で決済する`という文言にして、これのみ表示しています。
 
@@ -72,28 +67,40 @@ request_options = {
 
 Checkoutを利用するには、プライバシーポリシーのリンクと、配送方法と送料を照会できる`inquiryShippingMethods`のカスタマイズも同時に行う必要があり少し高度です。
 
-またRegKeyを取得や自動決済は事前に許可された加盟店しか利用できません。
+またRegKeyの取得や自動決済は事前に許可された加盟店しか利用できません。
 
-### ローカルで試す場合
+# テストで利用したい場合
 
-* Sandboxを利用しない方は`app.py`の上の方の`LINE_PAY_IS_SANDBOX`を`False`に変更
+## Sandboxの利用
+
+加盟店申請をしなくとも[Sandbox](https://pay.line.me/jp/developers/techsupport/sandbox/testflow?locale=ja_JP)でテストアカウントを作成し試すこともできます。
+
+## Sandboxのウォレットから引き落とす
+
+`app.py`の上の方の`LINE_PAY_IS_SANDBOX`を`True`に変更すると実際のウォレットからは引き落とされずSandboxのテストウォレットで決済を試すことができます。
+
+## ローカルで試す場合
+
+Herokuへのデプロイもせずローカルで試すこともできます。
+
+ただしPython3.6以上が必要です。
 
 * `.env_sample`を`.env`にリネーム
-* `.env`記載のID、SECRETをご自身のものに置き換え
-
+* `.env`に記載のID、SECRETをご自身のSandboxのものに置き換え
 
 ```bash
+$ git clone https://github.com/maztak/line-pay-v3-python-starter.git line-pay-app-xxx
+$ cd line-pay-app-xxx
+
 $ pip install -r requirements.txt
 $ python app.py
 ```
 
 [localhost:5000](localhost:5000)にアクセスし`LINE Pay で支払う`ボタンを押して一般決済を試す。
 
-### Based On
+# Based On
 
-SDKを作ってくれた加川さん、それをWeb上で試せるアプリにしてくれた立花さんのアプリをベースにさせていただいています。
-
-具体的には立花さんのアプリからkintone連携なしで利用できる形にしています。
+SDKを作ってくれた加川さん、それをWeb上で試せるアプリにしてくれた立花さんのアプリをベースにさせていただいています。具体的には立花さんのアプリからkintone連携なしで利用できる形にしています。
 
 * [LINE Pay v3 SDK Python](https://github.com/sumihiro3/line-pay-sdk-python)
 * [LINE Pay v3 SDK Python Sample with kintone](https://github.com/stachibana/line-pay-v3-python-sdk-sample)
