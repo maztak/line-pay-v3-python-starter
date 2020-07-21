@@ -1,6 +1,6 @@
 # Overview
 
-[LINE Pay v3 SDK](https://github.com/sumihiro3/line-pay-sdk-python)をベースにしたオンラインでの LINE Pay 決済を簡単に導入できるようにするスターターアプリです。
+オンラインでの LINE Pay 決済を簡単に導入できるスターターアプリです。
 
 # Prepare
 
@@ -43,4 +43,13 @@ $ pip install -r requirements.txt
 $ python app.py
 ```
 
-[localhost:8000](localhost:8000)にアクセスし`Request`ボタンを押して一般決済を試す。
+[localhost:5000](localhost:5000)にアクセスし`Request`ボタンを押して一般決済を試す。
+
+### Based On
+
+SDKを作ってくれた加川さん、それをWeb上で試せるアプリにしてくれた立花さんのアプリをベースにさせていただいています。
+
+具体的には立花さんのアプリからkintone連携なしで利用できる形にしています。
+
+* [LINE Pay v3 SDK Python](https://github.com/sumihiro3/line-pay-sdk-python)
+* [LINE Pay v3 SDK Python Sample with kintone](https://github.com/stachibana/line-pay-v3-python-sdk-sample)
