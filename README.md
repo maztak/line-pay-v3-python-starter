@@ -1,35 +1,46 @@
-![Screen Shot](https://cl.ly/64c4b0c3e2b9/pay_python.png)
-
 # Overview
 
-LINE Pay API v3のPython版SDKの動作を確認出来るWeb Appです。[kintone](https://kintone.cybozu.co.jp/)と連携しているため、APIを経由しての取引一覧確認、返金、オーソリ無効化、自動決済(サブスク)などの動作確認も可能です。
-
-[SDK](https://github.com/sumihiro3/line-pay-sdk-python)
+[LINE Pay v3 SDK](https://github.com/sumihiro3/line-pay-sdk-python)をベースにしたオンラインでの LINE Pay 決済を簡単に導入できるようにするスターターアプリです。
 
 # Prepare
 
-## LINE Pay API
+## LINE Pay 加盟店情報
+
+* 加盟店審査が完了している方はご自身のもので、まだの方は[Sandbox](https://pay.line.me/jp/developers/techsupport/sandbox/testflow?locale=ja_JP)を作成
+
+
+### Herokuにデプロイする場合
+
+* `xxx`はそれぞれ任意の値を設定
+
+```
+$ heroku login
+
+$ heroku create line-pay-app-xxx
+$ heroku git:remote -a line-pay-app-xxx
+$ git push heroku master
+
+$ heroku config:set LINE_PAY_CHANNEL_ID=xxx
+$ heroku config:set LINE_PAY_CHANNEL_SECRET=xxx
+```
+
+[https://line-pay-app-xxx.herokuapp.com](https://line-pay-app-xxx.herokuapp.com)にアクセスし`Request`ボタンを押して一般決済を試す。
+
+問題なければ[https://line-pay-app-xxx.herokuapp.com/request/nocapture](https://line-pay-app-xxx.herokuapp.com/request/nocapture)をユーザーにLINE上で送信し決済してもらう。
+
+金額を変えたい場合は`app.py`の`amount`の値を変更する。
+
+### ローカルで試す場合
+
+* Sandboxを利用しない方は`app.py`の上の方の`LINE_PAY_IS_SANDBOX`を`False`に変更
 
 * `.env_sample`を`.env`にリネーム
 * `.env`記載のID、SECRETをご自身のものに置き換え
-  * 加盟店審査が完了している方はご自身のもので
-  * まだの方は[Sandbox](https://pay.line.me/jp/developers/techsupport/sandbox/testflow?locale=ja_JP)を作成
-* Sandboxを利用しない方は`app.py`の上の方の`LINE_PAY_IS_SANDBOX`を`False`に変更
 
-## kintone
-
-* [開発者ライセンス](https://developer.cybozu.io/hc/ja/articles/360025742471)の申し込み
-* `account.yml_sample`を`account.yml`にリネーム
-* 以下の画像の通り設定
-
-![kintone description](https://cl.ly/28f3d463696e/kintone_description.png)
-![kintone description 2](https://cl.ly/249443c8b7fd/kintone_reload.png)
-
-## Execute
 
 ```bash
 $ pip install -r requirements.txt
 $ python app.py
 ```
 
-__Then deploy to some PaaS or use ngrok or some tunneling tool to check!__
+[localhost:8000](localhost:8000)にアクセスし`Request`ボタンを押して一般決済を試す。
