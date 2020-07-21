@@ -5,8 +5,6 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 from linepay import LinePayApi
-import pykintone
-from pykintone import model
 import datetime
 
 app = Flask(__name__)
@@ -27,23 +25,6 @@ api = LinePayApi(LINE_PAY_CHANNEL_ID,
 # Cache
 CACHE = {}
 
-# kintone
-account = pykintone.load("account.yml")
-kintone = account.app()
-
-
-class PayTransaction(model.kintoneModel):
-    def __init__(self):
-        super(PayTransaction, self).__init__()
-        self.transaction_id = ""
-        self.transaction_type = ""
-        self.method = ""
-        self.total_amount = 0
-        self.currency = ""
-        self.payment_status = ""
-        self.reg_key = ""
-
-
 def get_environment():
     return LINE_PAY_IS_SANDBOX
 
@@ -53,8 +34,7 @@ app.jinja_env.globals.update(get_environment=get_environment)
 
 @app.route('/')
 def do_get():
-    pay_transactions = kintone.select().models(PayTransaction)
-    return render_template('index.html', payTransactions=pay_transactions)
+    return render_template('index.html')
 
 
 @app.route('/cancel')
@@ -218,53 +198,18 @@ def pay_get_regkey():
 @app.route('/capture/<int:transaction_id>/<float:amount>/<currency>/')
 def capture_transaction(transaction_id, amount, currency):
     response = api.capture(transaction_id, amount, currency)
-
-    details = api.payment_details(transaction_id)
-
-    pay_transaction = kintone.select(
-        "transaction_id=" + str(transaction_id)).models(PayTransaction)[0]
-    pay_transaction.payment_status = details['info'][0]['payStatus']
-
-    kintone.update(pay_transaction)
-
     return redirect('/')
 
 
 @app.route('/void/<int:transaction_id>/')
 def void_authorization(transaction_id):
     response = api.void(transaction_id)
-
-    details = api.payment_details(transaction_id)
-
-    pay_transaction = kintone.select(
-        "transaction_id=" + str(transaction_id)).models(PayTransaction)[0]
-    pay_transaction.payment_status = details['info'][0]['payStatus']
-
-    kintone.update(pay_transaction)
-
     return redirect('/')
 
 
 @app.route('/refund/<int:transaction_id>/<float:refund_amount>/')
 def refund(transaction_id, refund_amount):
     response = api.refund(transaction_id)
-
-    transaction = PayTransaction()
-    transaction.transaction_id = response['info']['refundTransactionId']
-    transaction.transaction_type = 'REFUND'
-    transaction.method = 'N/A'
-    transaction.total_amount = refund_amount
-    transaction.currency = 'N/A'
-    transaction.payment_status = 'N/A'
-    transaction.reg_key = ''
-    kintone.create(transaction)
-
-    pay_transaction = kintone.select(
-        "transaction_id=" + str(transaction_id)).models(PayTransaction)[0]
-    pay_transaction.payment_status = 'REFUNDED'
-
-    kintone.update(pay_transaction)
-
     return redirect('/')
 
 
@@ -279,19 +224,6 @@ def pay_confirm():
         CACHE.get("currency", "JPY")
     )
 
-    details = api.payment_details(transaction_id)
-
-    transaction = PayTransaction()
-    transaction.transaction_id = transaction_id
-    transaction.transaction_type = details['info'][0]['transactionType']
-    transaction.method = details['info'][0]['payInfo'][0]['method']
-    transaction.total_amount = details['info'][0]['payInfo'][0]['amount']
-    transaction.currency = details['info'][0]['currency']
-    transaction.payment_status = details['info'][0]['payStatus']
-    if 'regKey' in response['info']:
-        transaction.reg_key = response['info']['regKey']
-    kintone.create(transaction)
-
     return redirect('/')
 
 
@@ -305,17 +237,6 @@ def pay_preapproved(reg_key):
 
     response = api.pay_preapproved(
         reg_key, product_name, float(amount), currency, order_id, True)
-
-    details = api.payment_details(response['info']['transactionId'])
-
-    transaction = PayTransaction()
-    transaction.transaction_id = response['info']['transactionId']
-    transaction.transaction_type = "PAYMENT(PREAPPROVED)"
-    transaction.method = "Preapproved method"
-    transaction.total_amount = amount
-    transaction.currency = currency
-    transaction.payment_status = details['info'][0]['payStatus']
-    kintone.create(transaction)
 
     return redirect('/')
 

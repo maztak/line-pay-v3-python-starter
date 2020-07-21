@@ -43,29 +43,5 @@
       <a href="/pay_get_regkey/"><button id="btn" type="button" class="btn btn-primary btn-block">Request & Get RegKey</button></a>
     </div>
   </div>
-  <div class="row">
-    {% for transaction in payTransactions %}
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">ID: {{transaction.transaction_id}}</h5>
-          <p class="card-text">Type: {{transaction.transaction_type}}</p>
-          <p class="card-text">Method: {{transaction.method}}</p>
-          <p class="card-text">Amount: {{transaction.total_amount}}</p>
-          <p class="card-text">Currency: {{transaction.currency}}</p>
-          <p class="card-text">Status: {{transaction.payment_status}}</p>
-          <p class="card-text">RegKey: {{transaction.reg_key}}</p>
-          <a href="/capture/{{transaction.transaction_id}}/{{transaction.total_amount}}/{{transaction.currency}}/" class="btn btn-primary"
-            {% if (transaction.transaction_type != "PAYMENT" and transaction.transaction_type != "PAYMENT(PREAPPROVED)") or transaction.payment_status != "AUTHORIZATION" %}disabled{% endif %}>Capture</a>
-          <a href="/void/{{transaction.transaction_id}}/" class="btn btn-primary"
-            {% if (transaction.transaction_type != "PAYMENT" and transaction.transaction_type != "PAYMENT(PREAPPROVED)") or transaction.payment_status != "AUTHORIZATION" %}disabled{% endif %}>Void</a>
-          <a href="/refund/{{transaction.transaction_id}}/{{transaction.total_amount}}/" class="btn btn-primary"
-            {% if (transaction.transaction_type != "PAYMENT" and transaction.transaction_type != "PAYMENT(PREAPPROVED)") or transaction.payment_status != "CAPTURE" %}disabled{% endif %}>Refund</a>
-          <a href="/pay_preapproved/{{transaction.reg_key}}/" class="btn btn-primary" {% if transaction.reg_key == "" %}disabled{% endif %}>Pay preapproved</a>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
 </div>
 {% endblock %}

@@ -10,7 +10,6 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 line-pay==0.1.0
 MarkupSafe==1.1.1
-pykintone==0.3.10
 python-dotenv==0.10.3
 pytz==2020.1
 PyYAML==5.3.1
