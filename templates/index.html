@@ -23,25 +23,32 @@
 
 {% block content %}
 <div class="container">
-  <div class="row">
+  <!-- 加盟店側で売上確定を手動で行う一般決済 -->
+  <!-- <div class="row">
     <div class="col">
       <a href="/request/nocapture"><button id="btn" type="button" class="btn btn-primary btn-block">Request</button></a>
     </div>
-  </div>
+  </div> -->
+
+  <!-- 売上確定まで自動で行う一般決済 -->
   <div class="row">
     <div class="col">
-      <a href="/request/capture"><button id="btn" type="button" class="btn btn-primary btn-block">Request & Capture</button></a>
+      <a href="/request/capture"><button id="btn" type="button" class="btn btn-primary btn-block">LINE Pay で決済する</button></a>
     </div>
   </div>
-  <div class="row">
+
+  <!-- 配送を伴なうチェックアウト（プライバシーポリシーのリンクが必要） -->
+  <!-- <div class="row">
     <div class="col">
       <a href="/checkout/"><button id="btn" type="button" class="btn btn-primary btn-block" {% if get_environment() %}disabled{% endif %}>Checkout(Production only)</button></a>
     </div>
-  </div>
-  <div class="row">
+  </div> -->
+
+  <!-- 自動決済（許可加盟店のみ） -->
+  <!-- <div class="row">
     <div class="col">
       <a href="/pay_get_regkey/"><button id="btn" type="button" class="btn btn-primary btn-block">Request & Get RegKey</button></a>
     </div>
-  </div>
+  </div> -->
 </div>
 {% endblock %}

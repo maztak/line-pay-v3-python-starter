@@ -60,7 +60,7 @@ def reserve_payment(param_capture):
         "packages": [
             {
                 "id": "package-999",
-                "amount": 1,
+                "amount": amount,
                 "name": "Sample package",
                 "products": [
                         {
@@ -68,7 +68,7 @@ def reserve_payment(param_capture):
                             "name": "Sample product",
                             "imageUrl": "https://placehold.jp/99ccff/003366/150x150.png?text=Sample%20product",
                                         "quantity": 1,
-                                        "price": 1
+                                        "price": amount
                         }
                 ]
             }
@@ -103,7 +103,7 @@ def checkout():
         "packages": [
             {
                 "id": "package-999",
-                "amount": 1,
+                "amount": amount,
                 "name": "Sample package",
                 "products": [
                         {
@@ -111,7 +111,7 @@ def checkout():
                             "name": "Sample product",
                             "imageUrl": "https://placehold.jp/99ccff/003366/150x150.png?text=Sample%20product",
                                         "quantity": 1,
-                                        "price": 1
+                                        "price": amount
                         }
                 ]
             }
@@ -137,15 +137,16 @@ def checkout():
 
 @app.route('/v1/shippings/methods/get/', methods=["POST"])
 def inquiryShippingMethods():
+    amount = "1000"
     result = {
         "returnCode": "0000",
         "returnMessage": "Example",
         "info": {
             "shippingMethods": [
                 {
-                    "id": "hoge",
-                    "name": "hogehoge express",
-                    "amount": "1000",
+                    "id": "shipping-001",
+                    "name": "sample express",
+                    "amount": amount,
                     "toDeliveryYmd": datetime.datetime.now().strftime("%Y%m%d")
                 }
             ]
@@ -169,7 +170,7 @@ def pay_get_regkey():
         "packages": [
             {
                 "id": "package-999",
-                "amount": 1,
+                "amount": amount,
                 "name": "Sample package",
                 "products": [
                         {
@@ -177,7 +178,7 @@ def pay_get_regkey():
                             "name": "Sample product",
                             "imageUrl": "https://placehold.jp/99ccff/003366/150x150.png?text=Sample%20product",
                                         "quantity": 1,
-                                        "price": 1
+                                        "price": amount
                         }
                 ]
             }
