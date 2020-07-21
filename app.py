@@ -36,6 +36,9 @@ app.jinja_env.globals.update(get_environment=get_environment)
 def do_get():
     return render_template('index.html')
 
+@app.route('/thanks')
+def do_get_thanks():
+    return render_template('thanks.html')
 
 @app.route('/cancel')
 def cancel():
@@ -224,7 +227,7 @@ def pay_confirm():
         CACHE.get("currency", "JPY")
     )
 
-    return redirect('/')
+    return redirect('/thanks')
 
 
 @app.route("/pay_preapproved/<reg_key>/")
