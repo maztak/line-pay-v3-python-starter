@@ -12,7 +12,7 @@ line-pay==0.1.0
 MarkupSafe==1.1.1
 python-dotenv==0.10.3
 pytz==2020.1
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.22.0
 tzlocal==2.1
 urllib3==1.25.9
